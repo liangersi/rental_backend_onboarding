@@ -12,8 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import rental.domain.model.House;
+import rental.domain.model.enums.HouseStatus;
 import rental.infrastructure.dataentity.HouseEntity;
 import rental.infrastructure.persistence.HouseJpaPersistence;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 
@@ -77,5 +81,33 @@ public class HouseRepositoryImplTest {
         // then
         assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
+    }
+
+    @Test
+    public void should_find_1_house_info_with_house_id() {
+        // given
+        Long houseId = 1L;
+        entityManager.persistAndFlush(HouseEntity.builder()
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build());
+
+        // when
+        House result = this.repository.queryOneHouseInfo(houseId);
+
+        // then
+        assertEquals(java.util.Optional.of(1L), java.util.Optional.of(result.getId()));
+        assertEquals("house-test", result.getName());
+        assertEquals(BigDecimal.valueOf(3000), result.getPrice());
+        assertEquals(HouseStatus.PENDING, result.getStatus());
+        assertEquals("chengdu", result.getLocation());
+        assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
+        assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
+        assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
     }
 }

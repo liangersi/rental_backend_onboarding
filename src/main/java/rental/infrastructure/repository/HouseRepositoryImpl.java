@@ -20,4 +20,9 @@ public class HouseRepositoryImpl implements HouseRepository {
     public Page<House> queryAllHouses(Pageable pageable) {
         return this.persistence.findAll(pageable).map(EntityToModelMapper.INSTANCE::mapToModel);
     }
+
+    @Override
+    public House queryOneHouseInfo(Long houseId) {
+        return EntityToModelMapper.INSTANCE.mapToModel(this.persistence.getOne(houseId));
+    }
 }
