@@ -9,8 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import rental.domain.model.House;
+import rental.domain.model.enums.HouseStatus;
 import rental.domain.repository.HouseRepository;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,5 +45,31 @@ public class HouseApplicationServiceTest {
         // then
         assertEquals(2, result.getTotalElements());
         assertEquals(2, result.getContent().size());
+    }
+
+    @Test
+    public void should_get_all_information(){
+        House houseInfo = House.builder()
+                .id(1L)
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build();
+        when(repository.queryOneHouseInfo(any())).thenReturn(houseInfo);
+
+        House result = applicationService.queryOneHouseInfo(1L);
+
+        assertEquals(java.util.Optional.of(1L), java.util.Optional.of(result.getId()));
+        assertEquals("house-test", result.getName());
+        assertEquals(BigDecimal.valueOf(3000), result.getPrice());
+        assertEquals(HouseStatus.PENDING, result.getStatus());
+        assertEquals("chengdu", result.getLocation());
+        assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
+        assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
+        assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
     }
 }
