@@ -54,7 +54,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
     @Test
     public void should_get_one_house_information() throws Exception {
         // given
-        persistence.saveAndFlush(HouseEntity.builder()
+        HouseEntity houseEntity = persistence.saveAndFlush(HouseEntity.builder()
                 .id(1L)
                 .name("house-test")
                 .price(BigDecimal.valueOf(3000))
@@ -68,7 +68,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
         // when
         given()
                 .when()
-                .get("/houses/1")
+                .get("/houses/"+houseEntity.getId().toString())
                 .then()
                 .statusCode(302)
                 .body("id", is(1))
