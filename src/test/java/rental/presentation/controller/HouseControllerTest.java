@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import rental.application.HouseApplicationService;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
+import rental.presentation.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -70,5 +71,16 @@ public class HouseControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(3333)));
+    }
+
+    @Test
+    public void should_throw_not_found_exception_when_id_is_not_exist() throws Exception{
+        when(applicationService.queryOneHouseInfo(any())).thenThrow(
+                new NotFoundException("Not Found Exception")
+        );
+        mvc.perform(get("/houses/666")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Not Found Exception")));
     }
 }
