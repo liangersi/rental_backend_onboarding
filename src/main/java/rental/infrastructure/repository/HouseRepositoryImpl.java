@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import rental.domain.model.House;
 import rental.domain.repository.HouseRepository;
+import rental.infrastructure.dataentity.HouseEntity;
 import rental.infrastructure.mapper.EntityToModelMapper;
 import rental.infrastructure.persistence.HouseJpaPersistence;
 
@@ -26,5 +27,10 @@ public class HouseRepositoryImpl implements HouseRepository {
     @Override
     public Optional<House> queryOneHouseInfo(Long houseId) {
         return this.persistence.findById(houseId).map(EntityToModelMapper.INSTANCE::mapToModel);
+    }
+
+    @Override
+    public House saveHouseInfo(HouseEntity houseEntity) {
+        return EntityToModelMapper.INSTANCE.mapToModel(this.persistence.save(houseEntity));
     }
 }
