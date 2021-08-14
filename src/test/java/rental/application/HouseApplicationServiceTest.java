@@ -11,11 +11,13 @@ import org.springframework.data.domain.PageRequest;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
 import rental.domain.repository.HouseRepository;
+import rental.presentation.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,5 +73,17 @@ public class HouseApplicationServiceTest {
         assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
         assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
         assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
+    }
+
+    @Test
+    public void should_throw_not_found_exception_when_id_is_not_exist(){
+        when(repository.queryOneHouseInfo(any())).thenReturn(Optional.empty());
+        String message = "";
+        try {
+            applicationService.queryOneHouseInfo(3333L);
+        } catch (NotFoundException exception) {
+            message = exception.getMessage();
+        }
+        assertEquals("not found exception", message);
     }
 }
