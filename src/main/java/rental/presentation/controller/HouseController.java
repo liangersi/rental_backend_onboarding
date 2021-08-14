@@ -7,13 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rental.application.HouseApplicationService;
 import rental.presentation.assembler.ModelToResponseMapper;
 import rental.presentation.dto.response.house.HouseResponse;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/houses")
@@ -32,5 +33,11 @@ public class HouseController {
                     Pageable pageable) {
         return promotionProposalApplicationService.queryAllHouses(pageable)
                                                   .map(ModelToResponseMapper.INSTANCE::mapToPromotionProposalResponse);
+    }
+
+    @GetMapping("/{houseId}")
+    @ResponseStatus(HttpStatus.FOUND)
+    public HouseResponse queryOneHouseInfo(@PathVariable @Valid Long houseId) {
+        return ModelToResponseMapper.INSTANCE.mapToPromotionProposalResponse(promotionProposalApplicationService.queryOneHouseInfo(houseId));
     }
 }
