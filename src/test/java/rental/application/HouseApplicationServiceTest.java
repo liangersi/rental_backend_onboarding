@@ -59,7 +59,7 @@ public class HouseApplicationServiceTest {
                 .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
                 .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
                 .build();
-        when(repository.queryOneHouseInfo(any())).thenReturn(houseInfo);
+        when(repository.queryOneHouseInfo(any())).thenReturn(java.util.Optional.ofNullable(houseInfo));
 
         House result = applicationService.queryOneHouseInfo(1L);
 
