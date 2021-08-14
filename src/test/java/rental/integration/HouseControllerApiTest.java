@@ -80,4 +80,15 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
                 .body("establishedTime", is("2012-08-14T12:20:00"))
                 .body("updatedTime", is("2020-08-14T12:20:00"));
     }
+
+    @Test
+    public void should_throw_not_found_exception_when_id_is_not_exist() throws Exception {
+
+        // when
+        given()
+                .when()
+                .get("/houses/6666")
+                .then()
+                .statusCode(404);
+    }
 }
