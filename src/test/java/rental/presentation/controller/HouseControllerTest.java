@@ -13,11 +13,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import rental.application.HouseApplicationService;
 import rental.domain.model.House;
+import rental.domain.model.enums.HouseStatus;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,5 +51,24 @@ public class HouseControllerTest {
         mvc.perform(get("/houses").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk()).andExpect(jsonPath("$.content", hasSize(2)))
             .andExpect(jsonPath("$.totalElements").value(2));
+    }
+
+    @Test
+    public void should_get_one_house_info() throws Exception{
+        House house = House.builder().name("house-test")
+                .id(3333L)
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .build();
+        when(applicationService.queryOneHouseInfo(house.getId())).thenReturn(house);
+
+        mvc.perform(get("/houses/"+house.getId().toString())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(3333)));
     }
 }
