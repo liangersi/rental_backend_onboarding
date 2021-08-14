@@ -18,6 +18,7 @@ import rental.infrastructure.persistence.HouseJpaPersistence;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -86,8 +87,7 @@ public class HouseRepositoryImplTest {
     @Test
     public void should_find_1_house_info_with_house_id() {
         // given
-        Long houseId = 1L;
-        entityManager.persistAndFlush(HouseEntity.builder()
+        HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
                 .name("house-test")
                 .price(BigDecimal.valueOf(3000))
                 .status(HouseStatus.PENDING)
@@ -98,7 +98,11 @@ public class HouseRepositoryImplTest {
                 .build());
 
         // when
-        House result = this.repository.queryOneHouseInfo(houseId);
+        Optional<House> house = this.repository.queryOneHouseInfo(houseEntity.getId());
+        House result = new House();
+        if (house.isPresent()) {
+            result = house.get();
+        }
 
         // then
         assertEquals(java.util.Optional.of(1L), java.util.Optional.of(result.getId()));
