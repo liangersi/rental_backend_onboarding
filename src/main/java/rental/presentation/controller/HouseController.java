@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rental.application.HouseApplicationService;
 import rental.presentation.assembler.ModelToResponseMapper;
+import rental.presentation.dto.request.HouseRequest;
 import rental.presentation.dto.response.house.HouseResponse;
 
 import javax.validation.Valid;
@@ -39,5 +40,10 @@ public class HouseController {
     @ResponseStatus(HttpStatus.FOUND)
     public HouseResponse queryOneHouseInfo(@PathVariable @Valid Long houseId) {
         return ModelToResponseMapper.INSTANCE.mapToPromotionProposalResponse(promotionProposalApplicationService.queryOneHouseInfo(houseId));
+    }
+
+    @PostMapping("/house")
+    public HouseResponse saveOneHouseInfo(@RequestBody HouseRequest houseRequest) {
+        return promotionProposalApplicationService.saveHouseInfo(houseRequest);
     }
 }
