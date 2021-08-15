@@ -18,6 +18,7 @@ import rental.application.HouseApplicationService;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
 import rental.presentation.dto.response.house.HouseResponse;
+import rental.presentation.exception.AddThirdClientException;
 import rental.presentation.exception.NotFoundException;
 
 import java.math.BigDecimal;
@@ -143,5 +144,22 @@ public class HouseControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse();
+    }
+
+    @Test
+    public void should_throw_add_third_client_exception_when_update_failed() throws Exception {
+        String houseJson = "{\"name\":\"house-test\",\"location\":\"chengdu\","
+                + "\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\",\"status\":\"PENDING\","
+                + "\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
+        MockHttpServletRequestBuilder houseRequest = post("/houses/house")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(houseJson);
+
+        when(applicationService.saveHouseInfo(any())).thenThrow(
+                new AddThirdClientException("Fail To Save House Info")
+        );
+        mvc.perform(houseRequest)
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message", is("Fail To Save House Info")));
     }
 }
