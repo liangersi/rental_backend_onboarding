@@ -30,9 +30,6 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
 
     private HouseJpaPersistence persistence;
 
-    private final String HOUSE_JSON = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
-    private final String HOUSE_JSON_LACK = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
-
     @Before
     public void setUp() {
         persistence = applicationContext.getBean(HouseJpaPersistence.class);
@@ -94,6 +91,8 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
 
     @Test
     public void should_return_house_response_when_given_correct_house_request() throws Exception {
+        String HOUSE_JSON = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\"," +
+                "\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
         given()
                 .body(HOUSE_JSON)
                 .when()
@@ -111,6 +110,8 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
 
     @Test
     public void should_throw_exception_when_given_arguments_is_lack() throws Exception {
+        String HOUSE_JSON_LACK = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"status\":\"PENDING\"," +
+                "\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
         given()
                 .body(HOUSE_JSON_LACK)
                 .when()
