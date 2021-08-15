@@ -21,7 +21,7 @@ public interface RequestToModelMapper {
 
     @Mapping(target = "establishedTime", source = "houseRequest.establishedTime", qualifiedByName = "toTimestamp")
     @Mapping(target = "createdTime", source = "houseRequest.createdTime", qualifiedByName = "toTimestamp")
-    @Mapping(target = "updatedTime", source = "houseRequest.createdTime", qualifiedByName = "toTimestamp")
+    @Mapping(target = "updatedTime", source = "houseRequest.updatedTime", qualifiedByName = "toTimestamp")
     House mapToPromotionProposalModel(HouseRequest houseRequest);
 
     @Named("toTimestamp")

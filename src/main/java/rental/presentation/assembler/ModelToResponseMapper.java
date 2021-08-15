@@ -20,7 +20,7 @@ public interface ModelToResponseMapper {
 
     @Mapping(target = "establishedTime", source = "model.establishedTime", qualifiedByName = "toTimestamp")
     @Mapping(target = "createdTime", source = "model.createdTime", qualifiedByName = "toTimestamp")
-    @Mapping(target = "updatedTime", source = "model.createdTime", qualifiedByName = "toTimestamp")
+    @Mapping(target = "updatedTime", source = "model.updatedTime", qualifiedByName = "toTimestamp")
     HouseResponse mapToPromotionProposalResponse(House model);
 
     @Named("toTimestamp")
