@@ -31,7 +31,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,9 +44,6 @@ public class HouseControllerTest {
 
     @MockBean
     private HouseApplicationService applicationService;
-
-    private final String HOUSE_JSON = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
-    private final String HOUSE_JSON_LACK = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
 
     @Test
     public void should_get_all_houses() throws Exception {
@@ -106,14 +105,17 @@ public class HouseControllerTest {
 
         when(applicationService.saveHouseInfo(any())).thenReturn(houseResponse);
 
+        String houseJson = "{\"name\":\"house-test\",\"location\":\"chengdu\","
+                + "\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\",\"status\":\"PENDING\","
+                + "\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
         MockHttpServletRequestBuilder houseRequest = post("/houses/house")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(HOUSE_JSON);
+                .content(houseJson);
 
         MediaType contentType = new MediaType("application", "json");
         MockHttpServletResponse response = mvc.perform(houseRequest)
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("house-test")))
                 .andExpect(jsonPath("$.price", is(3000)))
                 .andExpect(jsonPath("$.location", is("chengdu")))
@@ -129,9 +131,12 @@ public class HouseControllerTest {
 
     @Test
     public void should_throw_exception_when_lack_param() throws Exception {
+        String houseJsonLack = "{\"name\":\"house-test\",\"location\":\"chengdu\","
+                + "\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\","
+                + "\"updatedTime\":\"2021-08-14T12:20:00\"}";
         MockHttpServletRequestBuilder requestBuilder = post("/houses/house")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(HOUSE_JSON_LACK);
+                .content(houseJsonLack);
         MediaType contentType = new MediaType("application", "json");
 
         mvc.perform(requestBuilder)
