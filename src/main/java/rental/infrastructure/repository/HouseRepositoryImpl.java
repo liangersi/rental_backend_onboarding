@@ -33,4 +33,9 @@ public class HouseRepositoryImpl implements HouseRepository {
     public House saveHouseInfo(HouseEntity houseEntity) {
         return EntityToModelMapper.INSTANCE.mapToModel(this.persistence.save(houseEntity));
     }
+
+    @Override
+    public void deleteHouse(HouseEntity houseEntity) {
+        this.persistence.delete(houseEntity);
+    }
 }
