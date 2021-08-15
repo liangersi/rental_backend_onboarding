@@ -25,4 +25,11 @@ public class GlobalExceptionHandler {
     public ErrorMessage handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         return new ErrorMessage("Lack Argument Exception", ex.getMessage());
     }
+
+    @ExceptionHandler(AddThirdClientException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseBody
+    public ErrorMessage handleAddThirdClientException(AddThirdClientException ex) {
+        return new ErrorMessage("Fail Update Info To 3rd Client", ex.getMessage());
+    }
 }
