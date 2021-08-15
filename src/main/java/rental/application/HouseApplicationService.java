@@ -38,7 +38,9 @@ public class HouseApplicationService {
         HouseEntity houseEntity = RequestToEntityMapper.INSTANCE.mapToPromotionProposalModel(houseRequest);
         House houseSaved = houseRepository.saveHouseInfo(houseEntity);
 
-        if (!fakeClient.saveOneHouseInfo(houseSaved)) {
+        try {
+            fakeClient.saveOneHouseInfo(houseSaved);
+        } catch (Exception ex) {
             houseRepository.deleteHouse(houseEntity);
             throw new AddThirdClientException("fail update info to 3rd client");
         }

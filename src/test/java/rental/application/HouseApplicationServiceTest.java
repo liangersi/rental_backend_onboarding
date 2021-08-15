@@ -12,6 +12,9 @@ import rental.client.FakeClient;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
 import rental.domain.repository.HouseRepository;
+import rental.infrastructure.dataentity.HouseEntity;
+import rental.infrastructure.mapper.ModelToEntityMapper;
+import rental.presentation.assembler.RequestToModelMapper;
 import rental.presentation.dto.request.HouseRequest;
 import rental.presentation.dto.response.house.HouseResponse;
 import rental.presentation.exception.AddThirdClientException;
@@ -123,15 +126,29 @@ public class HouseApplicationServiceTest {
 
     @Test
     public void should_throw_add_third_client_exception_when_save_is_failure() {
-        when(fakeClient.saveOneHouseInfo(any())).thenThrow(
+        HouseRequest houseRequest = HouseRequest.builder()
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build();
+        House house = RequestToModelMapper.INSTANCE.mapToPromotionProposalModel(houseRequest);
+        HouseEntity houseEntity = ModelToEntityMapper.INSTANCE.mapToEntity(house);
+
+        when(repository.saveHouseInfo(houseEntity)).thenReturn(house);
+        when(fakeClient.saveOneHouseInfo(house)).thenThrow(
                 new AddThirdClientException("Fail To Add House Info")
         );
         String message = "";
         try {
-            applicationService.saveHouseInfo(any());
+            applicationService.saveHouseInfo(houseRequest);
         } catch (AddThirdClientException exception) {
             message = exception.getMessage();
         }
-        assertEquals("Fail To Add House Info", message);
+        assertEquals("fail update info to 3rd client", message);
+
     }
 }

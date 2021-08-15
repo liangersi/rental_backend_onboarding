@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import rental.RentalServiceApplication;
+import rental.client.FakeClient;
 import rental.config.BaseIntegrationTest;
 import rental.domain.model.enums.HouseStatus;
 import rental.infrastructure.dataentity.HouseEntity;
@@ -30,13 +32,16 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
 
     private HouseJpaPersistence persistence;
 
+    @MockBean
+    private FakeClient fakeClient;
+
     @Before
     public void setUp() {
         persistence = applicationContext.getBean(HouseJpaPersistence.class);
     }
 
     @Test
-    public void should_get_all_houses() throws Exception {
+    public void should_get_all_houses() {
         // given
         persistence.saveAndFlush(HouseEntity.builder().name("house-1").build());
         persistence.saveAndFlush(HouseEntity.builder().name("house-2").build());
@@ -52,7 +57,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_get_one_house_information() throws Exception {
+    public void should_get_one_house_information() {
         // given
         HouseEntity houseEntity = persistence.saveAndFlush(HouseEntity.builder()
                 .id(1L)
@@ -81,7 +86,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_throw_not_found_exception_when_id_is_not_exist() throws Exception {
+    public void should_throw_not_found_exception_when_id_is_not_exist() {
         given()
                 .when()
                 .get("/houses/6666")
@@ -90,7 +95,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_return_house_response_when_given_correct_house_request() throws Exception {
+    public void should_return_house_response_when_given_correct_house_request() {
         String houseJson = "{\"name\":\"house-test\",\"location\":\"chengdu\","
                 + "\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\","
                 + "\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\","
@@ -111,7 +116,7 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_throw_exception_when_given_arguments_is_lack() throws Exception {
+    public void should_throw_exception_when_given_arguments_is_lack() {
         String houseJsonLack = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"status\":\"PENDING\","
                 + "\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
         given()

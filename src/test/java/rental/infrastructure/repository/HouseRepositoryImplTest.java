@@ -137,7 +137,7 @@ public class HouseRepositoryImplTest {
     }
 
     @Test
-    public void should_delete_house_info(){
+    public void should_delete_house_info() {
         HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
                 .name("house-test")
                 .price(BigDecimal.valueOf(3000))
