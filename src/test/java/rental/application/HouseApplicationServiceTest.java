@@ -8,11 +8,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import rental.client.FakeClient;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
 import rental.domain.repository.HouseRepository;
 import rental.presentation.dto.request.HouseRequest;
 import rental.presentation.dto.response.house.HouseResponse;
+import rental.presentation.exception.AddThirdClientException;
 import rental.presentation.exception.NotFoundException;
 
 import java.math.BigDecimal;
@@ -32,6 +34,9 @@ public class HouseApplicationServiceTest {
 
     @Mock
     private HouseRepository repository;
+
+    @Mock
+    private FakeClient fakeClient;
 
     private final House houseInfo = House.builder()
             .id(1L)
@@ -114,5 +119,19 @@ public class HouseApplicationServiceTest {
         assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
         assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
         assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
+    }
+
+    @Test
+    public void should_throw_add_third_client_exception_when_save_is_failure() {
+        when(fakeClient.saveOneHouseInfo(any())).thenThrow(
+                new AddThirdClientException("Fail To Add House Info")
+        );
+        String message = "";
+        try {
+            applicationService.saveHouseInfo(any());
+        } catch (AddThirdClientException exception) {
+            message = exception.getMessage();
+        }
+        assertEquals("Fail To Add House Info", message);
     }
 }
