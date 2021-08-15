@@ -1,6 +1,7 @@
 package rental.presentation.dto.response.house;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import rental.domain.model.enums.HouseStatus;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class HouseResponse {
     private Long id;
 
