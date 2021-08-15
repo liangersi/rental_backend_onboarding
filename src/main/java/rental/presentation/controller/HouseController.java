@@ -45,8 +45,8 @@ public class HouseController {
     @GetMapping("/{houseId}")
     @ResponseStatus(HttpStatus.FOUND)
     public HouseResponse queryOneHouseInfo(@PathVariable @Valid Long houseId) {
-        return ModelToResponseMapper.INSTANCE.
-                mapToPromotionProposalResponse(promotionProposalApplicationService.queryOneHouseInfo(houseId));
+        return ModelToResponseMapper.INSTANCE
+                .mapToPromotionProposalResponse(promotionProposalApplicationService.queryOneHouseInfo(houseId));
     }
 
     @PostMapping("/house")
