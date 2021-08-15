@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import rental.domain.model.House;
 import rental.domain.model.enums.HouseStatus;
 import rental.domain.repository.HouseRepository;
+import rental.presentation.dto.request.HouseRequest;
+import rental.presentation.dto.response.house.HouseResponse;
 import rental.presentation.exception.NotFoundException;
 
 import java.math.BigDecimal;
@@ -31,6 +33,17 @@ public class HouseApplicationServiceTest {
     @Mock
     private HouseRepository repository;
 
+    private final House houseInfo = House.builder()
+            .id(1L)
+            .name("house-test")
+            .price(BigDecimal.valueOf(3000))
+            .status(HouseStatus.PENDING)
+            .location("chengdu")
+            .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+            .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+            .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+            .build();
+
     @Test
     public void should_get_all_houses() {
         // given
@@ -50,18 +63,8 @@ public class HouseApplicationServiceTest {
     }
 
     @Test
-    public void should_get_all_information(){
-        House houseInfo = House.builder()
-                .id(1L)
-                .name("house-test")
-                .price(BigDecimal.valueOf(3000))
-                .status(HouseStatus.PENDING)
-                .location("chengdu")
-                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
-                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
-                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
-                .build();
-        when(repository.queryOneHouseInfo(any())).thenReturn(java.util.Optional.ofNullable(houseInfo));
+    public void should_get_all_information() {
+        when(repository.queryOneHouseInfo(any())).thenReturn(java.util.Optional.ofNullable(this.houseInfo));
 
         House result = applicationService.queryOneHouseInfo(1L);
 
@@ -76,7 +79,7 @@ public class HouseApplicationServiceTest {
     }
 
     @Test
-    public void should_throw_not_found_exception_when_id_is_not_exist(){
+    public void should_throw_not_found_exception_when_id_is_not_exist() {
         when(repository.queryOneHouseInfo(any())).thenReturn(Optional.empty());
         String message = "";
         try {
@@ -85,5 +88,31 @@ public class HouseApplicationServiceTest {
             message = exception.getMessage();
         }
         assertEquals("not found exception", message);
+    }
+
+    @Test
+    public void should_return_house_response_when_given_correct_house_request() {
+        HouseRequest houseRequest = HouseRequest.builder()
+                .id(1L)
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build();
+        when(this.repository.saveHouseInfo(any()))
+                .thenReturn(houseInfo);
+
+        HouseResponse result = applicationService.saveHouseInfo(houseRequest);
+
+        assertEquals("house-test", result.getName());
+        assertEquals(BigDecimal.valueOf(3000), result.getPrice());
+        assertEquals(HouseStatus.PENDING, result.getStatus());
+        assertEquals("chengdu", result.getLocation());
+        assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
+        assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
+        assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
     }
 }
