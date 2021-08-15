@@ -43,7 +43,8 @@ public class HouseController {
     }
 
     @PostMapping("/house")
-    public HouseResponse saveOneHouseInfo(@RequestBody HouseRequest houseRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public HouseResponse saveOneHouseInfo(@RequestBody @Valid HouseRequest houseRequest) {
         return promotionProposalApplicationService.saveHouseInfo(houseRequest);
     }
 }
