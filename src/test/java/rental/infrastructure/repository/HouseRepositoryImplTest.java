@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -133,5 +134,23 @@ public class HouseRepositoryImplTest {
         assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
         assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
         assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
+    }
+
+    @Test
+    public void should_delete_house_info(){
+        HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build());
+        this.repository.deleteHouse(houseEntity);
+        Optional<House> houseOptional = this.repository.queryOneHouseInfo(houseEntity.getId());
+
+        assertNotEquals("house-test", houseOptional.<Object>map(House::getName).orElse(null));
+
     }
 }
