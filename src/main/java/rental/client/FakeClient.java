@@ -9,5 +9,5 @@ import rental.domain.model.House;
 public interface FakeClient {
 
     @PostMapping("houses/house")
-    Boolean saveOneHouseInfo(@RequestBody House house);
+    House saveOneHouseInfo(@RequestBody House house);
 }
