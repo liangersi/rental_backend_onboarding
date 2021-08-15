@@ -86,7 +86,6 @@ public class HouseRepositoryImplTest {
 
     @Test
     public void should_find_1_house_info_with_house_id() {
-        // given
         HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
                 .name("house-test")
                 .price(BigDecimal.valueOf(3000))
@@ -105,7 +104,28 @@ public class HouseRepositoryImplTest {
         }
 
         // then
-        assertEquals(java.util.Optional.of(1L), java.util.Optional.of(result.getId()));
+        assertEquals("house-test", result.getName());
+        assertEquals(BigDecimal.valueOf(3000), result.getPrice());
+        assertEquals(HouseStatus.PENDING, result.getStatus());
+        assertEquals("chengdu", result.getLocation());
+        assertEquals(LocalDateTime.of(2020, 8, 14, 12, 20, 0), result.getCreatedTime());
+        assertEquals(LocalDateTime.of(2012, 8, 14, 12, 20, 0), result.getEstablishedTime());
+        assertEquals(LocalDateTime.of(2021, 8, 14, 12, 20, 0), result.getUpdatedTime());
+    }
+
+    @Test
+    public void should_return_house_when_given_correct_house_info(){
+        HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
+                .name("house-test")
+                .price(BigDecimal.valueOf(3000))
+                .status(HouseStatus.PENDING)
+                .location("chengdu")
+                .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
+                .build());
+        House result = this.repository.saveHouseInfo(houseEntity);
+
         assertEquals("house-test", result.getName());
         assertEquals(BigDecimal.valueOf(3000), result.getPrice());
         assertEquals(HouseStatus.PENDING, result.getStatus());
