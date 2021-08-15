@@ -114,7 +114,7 @@ public class HouseRepositoryImplTest {
     }
 
     @Test
-    public void should_return_house_when_given_correct_house_info(){
+    public void should_return_house_when_given_correct_house_info() {
         HouseEntity houseEntity = entityManager.persistAndFlush(HouseEntity.builder()
                 .name("house-test")
                 .price(BigDecimal.valueOf(3000))
