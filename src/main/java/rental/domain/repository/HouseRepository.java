@@ -13,4 +13,6 @@ public interface HouseRepository {
     Optional<House> queryOneHouseInfo(Long houseId);
 
     House saveHouseInfo(HouseEntity houseEntity);
+
+    void deleteHouse(HouseEntity houseEntity);
 }
