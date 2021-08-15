@@ -30,6 +30,9 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
 
     private HouseJpaPersistence persistence;
 
+    private final String HOUSE_JSON = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"price\":3000,\"establishedTime\":\"2012-08-14T12:20:00\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
+    private final String HOUSE_JSON_LACK = "{\"name\":\"house-test\",\"location\":\"chengdu\",\"status\":\"PENDING\",\"createdTime\":\"2020-08-14T12:20:00\",\"updatedTime\":\"2021-08-14T12:20:00\"}";
+
     @Before
     public void setUp() {
         persistence = applicationContext.getBean(HouseJpaPersistence.class);
@@ -62,33 +65,57 @@ public class HouseControllerApiTest extends BaseIntegrationTest {
                 .location("chengdu")
                 .createdTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
                 .establishedTime(LocalDateTime.of(2012, 8, 14, 12, 20, 0))
-                .updatedTime(LocalDateTime.of(2020, 8, 14, 12, 20, 0))
+                .updatedTime(LocalDateTime.of(2021, 8, 14, 12, 20, 0))
                 .build());
 
         // when
         given()
                 .when()
-                .get("/houses/"+houseEntity.getId().toString())
+                .get("/houses/" + houseEntity.getId().toString())
                 .then()
                 .statusCode(302)
-                .body("id", is(1))
                 .body("name", is("house-test"))
                 .body("price", is(3000))
                 .body("status", is("PENDING"))
                 .body("location", is("chengdu"))
                 .body("createdTime", is("2020-08-14T12:20:00"))
                 .body("establishedTime", is("2012-08-14T12:20:00"))
-                .body("updatedTime", is("2020-08-14T12:20:00"));
+                .body("updatedTime", is("2021-08-14T12:20:00"));
     }
 
     @Test
     public void should_throw_not_found_exception_when_id_is_not_exist() throws Exception {
-
-        // when
         given()
                 .when()
                 .get("/houses/6666")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void should_return_house_response_when_given_correct_house_request() throws Exception {
+        given()
+                .body(HOUSE_JSON)
+                .when()
+                .post("/houses/house")
+                .then()
+                .statusCode(201)
+                .body("name", is("house-test"))
+                .body("price", is(3000))
+                .body("status", is("PENDING"))
+                .body("location", is("chengdu"))
+                .body("createdTime", is("2020-08-14T12:20:00"))
+                .body("establishedTime", is("2012-08-14T12:20:00"))
+                .body("updatedTime", is("2021-08-14T12:20:00"));
+    }
+
+    @Test
+    public void should_throw_exception_when_given_arguments_is_lack() throws Exception {
+        given()
+                .body(HOUSE_JSON_LACK)
+                .when()
+                .post("/houses/house")
+                .then()
+                .statusCode(400);
     }
 }
